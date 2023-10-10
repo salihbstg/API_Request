@@ -1,38 +1,38 @@
 class Request {
 
-    getRequest(source) { // GET REQUEST
-
-        return new Promise((resolve, reject) => {
-            fetch(source).then(response => response.text()).then(response => {
-                resolve(response);
-            }).catch(e => {
-                reject(e);
-            })
-        })
+    async getRequest(source) { // GET REQUEST
+        let promise = await fetch(source);
+        let data = await promise.json();
+        return data;
     }
-    setRequest(source, data) { // SET REQUEST
-        // {"hobby":"Football","name":"Salih"},
-        fetch(source, {
+    async setRequest(source, addData) { // SET REQUEST
+        let promise = await fetch(source, {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify(addData),
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then(response => response.text()).then(response => console.log(response)).catch(e => console.log(e));
+        });
+        let data=await promise.json();
+        return data;
     }
-    putRequest(source, data) { //PUT REQUEST
-        fetch(source, {
-            method: "PUT",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(response => response.text()).then(response => console.log(response)).catch(e => console.log(e));
+    async putRequest(source, putData) { //PUT REQUEST
+        let promise=await fetch(source,{
+                method: "PUT",
+                body: JSON.stringify(putData),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+        let data =await promise.json();
+        return data;
     }
-    deleteRequest(source) {
-        fetch(source, {
-            method: "DELETE"
-        }).then(() => console.log("Successfully deleted")).catch(e => console.log(e));
+    async deleteRequest(source) { //DELETE REQUEST
+        let promise=await fetch(source,{
+            method:"DELETE"
+        });
+        let deleted=await promise.json();
+        return deleted;
     }
 };
 
@@ -40,21 +40,17 @@ let globalData = null;
 const requ = new Request();
 const myObject = {
     "hobby": "Playing Tennis",
-    "name": "Sezin"
+    "name": "Salih"
 };
-//GET REQUEST
-requ.getRequest("json/salih.json").then(data => {
-    globalData = data;
-    console.log(globalData);
-}).catch(e => {
-    console.log(e);
-});
+
+// GET REQUEST
+requ.getRequest("json/salih.json").then(data => console.log(data));
 
 // SET REQUEST
-requ.setRequest("https://jsonplaceholder.typicode.com/albums", myObject);
+requ.setRequest("https://jsonplaceholder.typicode.com/albums", myObject).then(txt=>console.log(txt));
 
 //PUT REQUEST
-requ.putRequest("https://jsonplaceholder.typicode.com/albums/1", myObject);
+requ.putRequest("https://jsonplaceholder.typicode.com/albums/1", myObject).then(txt=>console.log(txt));
 
 //DELETE REQUEST
-requ.deleteRequest("https://jsonplaceholder.typicode.com/albums/1");
+requ.deleteRequest("https://jsonplaceholder.typicode.com/albums/1").then(e=>console.log(e));
